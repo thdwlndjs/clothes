@@ -1,0 +1,50 @@
+.login-btn{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin: 30px 30px 0 ;
+  }
+  .login{
+    margin-left: 3px;
+    cursor: pointer;
+  }
+  
+  .nav-logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .menu-area{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .menu-list{
+    display: flex;
+    list-style: none;
+    padding:0;
+  }
+  .menu-list li{
+    padding:10px;
+    cursor: pointer;
+  }
+  
+  .search{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    
+  }
+  
+  .search input{
+    border: none;
+    margin-left: 3px;
+  }
+  
+  .search-bar{
+    border-bottom: 2px solid black;
+    margin-right: 30px;
+    padding: 5px;
+  }
