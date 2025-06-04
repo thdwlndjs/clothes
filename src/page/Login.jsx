@@ -15,6 +15,12 @@ const Login = () => {
 
   const navigate = useNavigate();  // useNavigate 훅 사용
 
+  const goToMain = (uid) => {
+    console.log(`UID ${uid}로 메인 페이지 이동!`);
+    navigate('/main'); // 또는 원하는 페이지로 이동
+  };
+
+  
   const handleLogin = async (e) => {
     e.preventDefault(); // 페이지 리로드 방지
     setErrorMsg('');
@@ -25,7 +31,7 @@ const Login = () => {
         // 성공 시
         setSuccessMsg("로그인에 성공했습니다!");
         console.log('로그인 성공:', userCredential.user);
-        navigate('/productall'); // 메인 화면으로 이동
+        goToMain(userCredential.user.uid); // UID 기반으로 메인 화면 이동
       })
       .catch((error) => {
         if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
@@ -44,9 +50,9 @@ const Login = () => {
   const handleGoogleLogin = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        const user = result.user;
+        const user = result.user; // 로그인한 사용자 정보 가져오기
         console.log('구글 로그인 성공:', user);
-        navigate('/'); // 메인 화면으로 이동
+        goToMain(user.uid); // UID 기반으로 메인 화면 이동
       })
       .catch((error) => {
         console.error('구글 로그인 실패:', error.message);

@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css'
-import FirstNav from './FirstNav'
-import ProductAll from './page/ProductAll';
-import Login from './page/Login';
-import ProductPage from './page/ProductPage';
+import './App.css';
+import FirstNav from './FirstNav';
+import Main from './page/Main';
 import Navbar from './Navbar';
-import Text from './page/Text';
 
 
 function App() {
@@ -14,18 +11,13 @@ function App() {
 
   return (
 
-    <div>
-      {!isLoginPage && <Navbar />}
-      <Router>
-        <Routes>
-          <Route path="/" element={<FirstNav />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/productall" element={<ProductAll />} />
-          <Route path="/product" element={<ProductPage />} />
-          <Route path="/text" element={<Text />} />
-        </Routes>
-      </Router>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<FirstNav />} />
+        <Route path="/main" element={<><Navbar /><Main /></>} /> {/* Main에서만 Navbar 표시 */}
+      </Routes>
+    </Router>
+
   );
 }
 
