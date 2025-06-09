@@ -1,0 +1,69 @@
+/* 전체 배경 및 레이아웃 설정 */
+body {
+    background: #fff;
+    color: #111;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 2px;
+    margin: 0;
+    padding: 0;
+}
+
+/* 메뉴 영역 */
+.menu-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: url('https://www.emostanceclub.com/17') center/cover no-repeat;
+    position: relative;
+}
+
+/* 메뉴 리스트 */
+.menu-list {
+    list-style: none;
+    display: flex;
+    gap: 50px;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    z-index: 10;
+}
+
+/* 메뉴 항목 */
+.menu-list li {
+    cursor: pointer;
+    position: relative;
+    padding: 10px 0;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+
+
+
+/* 모달 오버레이 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(10px);
+    animation: fadeInModal 0.4s ease forwards;
+}
+
+/* 모달 애니메이션 */
+@keyframes fadeInModal {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

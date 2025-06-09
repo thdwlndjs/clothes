@@ -31,20 +31,3 @@
     cursor: pointer;
   }
   
-  .search{
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    
-  }
-  
-  .search input{
-    border: none;
-    margin-left: 3px;
-  }
-  
-  .search-bar{
-    border-bottom: 2px solid black;
-    margin-right: 30px;
-    padding: 5px;
-  }

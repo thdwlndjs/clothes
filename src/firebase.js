@@ -1,6 +1,9 @@
 // src/firebase.js
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth ,GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; 
+import { getFunctions, httpsCallable } from "firebase/functions";
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyDbmnQqQPDKYQz8usU1RD3vAgqlpMFG8d4",
@@ -12,8 +15,15 @@ const firebaseConfig = {
     measurementId: "G-VWEFTV5HJZ"
   };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app); // ✅ 로그인 등에 사용
-const provider = new GoogleAuthProvider();
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app); // ✅ 로그인 등에 사용
+  const provider = new GoogleAuthProvider();
+  export const db = getFirestore(app);
+  export const functions = getFunctions(app);  // 이게 먼저!
+  
+  export const checkProductStatus = httpsCallable(functions, 'checkProductStatus');  // 그리고 나서
+  
+  export { auth, provider, signInWithPopup };
+  export const firebaseProjectId = "your-firebase-project-id";
+  
 
-export { auth, provider, signInWithPopup };
