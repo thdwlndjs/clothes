@@ -5,6 +5,28 @@ ul {
   width: 100%;          /* 부모 너비를 100%로 */
   box-sizing: border-box; /* 패딩/보더 포함 너비 계산 */
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 0 40px 0; /* 위 여백 20px, 아래 여백 40px */
+}
+
+.pagination button {
+  padding: 6px 12px;
+  background-color: transparent;
+  color: black;
+  border: none; 
+  cursor: pointer;
+}
+
+.pagination button.active {
+  font-weight: bold;
+  color: black;
+}
+
 .product-item {
   position: relative;
   list-style: none;
@@ -14,6 +36,12 @@ ul {
   padding: 60px 0 80px 0; /* 위 오른쪽 아래 왼쪽 모두 10px */
   border-radius: 8px;
   transition: box-shadow 0.3s ease;
+}
+
+/* soldOut일 때  색상 변경 */
+.product-item.sold-out {
+  color: gray;
+  opacity: 0.6;
 }
 
 .product-item:hover {
@@ -121,7 +149,7 @@ ul {
 /* 🔘 본문 영역 */
 .modal-body {
   flex-grow: 1;
-  padding: 0 40px 24px 40px;
+  padding: 0 40px 0px 40px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -149,7 +177,24 @@ ul {
   border-style: none;
 }
 
-/* ✅ 반응형 대응 */
+
+.select-bar-wrapper{
+  position: relative;
+}
+
+.select-bar {
+  padding: 4px 3px 4px 7px;
+  font-size: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  appearance: none;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px 16px;
+}
+
 @media (max-width: 768px) {
   .modal {
     width: 95%;

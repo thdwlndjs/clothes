@@ -13,16 +13,24 @@ import {
 import { db, auth } from '../firebase';
 import { GoPlusCircle, GoDash } from 'react-icons/go';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useParams } from 'react-router-dom';
+
 import he from 'he';
+import './Home.css';
 
-import './Main.css';
 
-function Main() {
+const menuList = ['Outer', 'Top', 'Bottoms', 'ACC', 'Shoes', 'Logout'];
+const ITEMS_PER_PAGE = 7;
+
+function Home() {
+  const { category: Param } = useParams(); // URL 파라미터를 Param으로 rename
   const [products, setProducts] = useState([]);
   const [link, setLink] = useState('');
+  const [category, setCategory] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // 🔄 Firestore 데이터 로드
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -42,13 +50,20 @@ function Main() {
     return () => unsubscribe();
   }, []);
 
-  // 🔎 Open Graph 데이터 가져오기
+  useEffect(() => {
+    if (Param && menuList.includes(Param)) {
+      setCategoryFilter(Param);
+    } else {
+      setCategoryFilter(null);
+    }
+  }, [Param]);
+
   const fetchOgData = async (url) => {
     try {
       const res = await axios.get(`http://localhost:3001/api/preview?url=${encodeURIComponent(url)}`);
       return {
         link: url,
-        ogImage: res.data.ogImage || '/fallback.png', // fallback image
+        ogImage: res.data.ogImage || '/fallback.png',
         ogTitle: res.data.ogTitle || '제목 없음'
       };
     } catch (error) {
@@ -61,33 +76,51 @@ function Main() {
     }
   };
 
-  // ➕ 상품 추가
   const onAdd = async () => {
-    if (!link.trim()) return;
+    if (!link.trim() || !category) {
+      return alert('링크와 카테고리를 모두 입력해주세요.');
+    }
+
     const userId = auth.currentUser?.uid;
     if (!userId) return alert('로그인이 필요합니다.');
 
-    const ogData = await fetchOgData(link);
-
     try {
+      // 1. OG 데이터 가져오기
+      const ogData = await fetchOgData(link);
+
+      // 2. 품절 여부 확인 API 호출
+      const soldOutRes = await axios.get(`http://localhost:3001/api/check-soldout?url=${encodeURIComponent(link)}`);
+      const isSoldOut = soldOutRes.data?.isSoldOut ?? false; // fallback 처리
+      console.log('서버 응답:', soldOutRes.data);
+
+
+      // 3. Firestore 저장
       const docRef = await addDoc(
         collection(db, 'users', userId, 'products'),
         {
           ...ogData,
+          category: category,
+          soldOut: isSoldOut,
           createdAt: serverTimestamp()
         }
       );
 
-      setProducts(prev => [{ id: docRef.id, ...ogData }, ...prev]);
+      // 4. 로컬 상태 갱신
+      setProducts(prev => [
+        { id: docRef.id, ...ogData, category, soldOut: isSoldOut },
+        ...prev
+      ]);
+
       setLink('');
+      setCategory('');
       setModalOpen(false);
     } catch (e) {
-      console.error('[X] Firestore 저장 오류:', e);
+      console.error('[X] 상품 추가 실패:', e);
       alert('상품 추가에 실패했습니다.');
     }
   };
 
-  // ❌ 상품 삭제
+
   const handleDelete = async (id) => {
     const userId = auth.currentUser?.uid;
     if (!userId) return alert('로그인이 필요합니다.');
@@ -101,11 +134,25 @@ function Main() {
     }
   };
 
+  const filteredProducts = categoryFilter
+    ? products.filter(product => product.category === categoryFilter)
+    : products;
+
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   return (
     <div>
+      {/* 카테고리 필터 */}
+      <div className="category-filter"></div>
+
+      {/* 상품 리스트 */}
       <ul>
-        {products.map(product => (
-          <li className="product-item" key={product.id}>
+        {paginatedProducts.map(product => (
+          <li className={`product-item ${product.soldOut ? 'sold-out' : ''}`} key={product.id}>
             <button className="p-close-btn" onClick={() => {
               if (window.confirm('삭제하시겠습니까?')) {
                 handleDelete(product.id);
@@ -121,11 +168,25 @@ function Main() {
         ))}
       </ul>
 
-      {/* ➕ 모달 열기 버튼 */}
+      {/* 페이지네이션 */}
+      <div className="pagination">
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index + 1}
+            onClick={() => setCurrentPage(index + 1)}
+            className={currentPage === index + 1 ? 'active' : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
+
+      {/* 추가 버튼 */}
       <button
         onClick={() => {
           setModalOpen(true);
           setLink('');
+          setCategory('');
         }}
         className="fixed-button"
         aria-label="추가"
@@ -133,7 +194,7 @@ function Main() {
         <GoPlusCircle size={40} color="black" />
       </button>
 
-      {/* 🪟 모달 */}
+      {/* 모달 */}
       {modalOpen && (
         <div className="modal">
           <div className="modal-header">
@@ -141,6 +202,7 @@ function Main() {
             <button className="close-btn" onClick={() => {
               setModalOpen(false);
               setLink('');
+              setCategory('');
             }}>
               <AiOutlineClose size={20} />
             </button>
@@ -152,6 +214,13 @@ function Main() {
               onChange={(e) => setLink(e.target.value)}
               placeholder="상품 링크를 입력하세요"
             />
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="select-bar"
+>
+              <option value="">카테고리 선택</option>
+              {menuList.filter(cat => cat !== 'Logout').map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
             <button className="add-button" onClick={onAdd}>추가</button>
           </div>
         </div>
@@ -160,4 +229,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default Home;

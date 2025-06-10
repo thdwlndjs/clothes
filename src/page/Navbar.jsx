@@ -1,39 +1,40 @@
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
-  const menuList = ['Outer', 'Top', 'Bottoms', 'ACC', 'Shoes', 'Logout']
+  const menuList = ['Outer', 'Top', 'Bottoms', 'ACC', 'Shoes', 'Logout'];
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        console.log('로그아웃 성공');
-        window.location.href = '/';  // 로그아웃 후 메인(또는 첫 페이지)로 이동
-      })
-      .catch((error) => {
-        console.error('로그아웃 실패', error);
-      });
-  }
+
+  const handleClick = (menu) => {
+    if (menu === 'Logout') {
+      const auth = getAuth();
+      signOut(auth)
+        .then(() => {
+          console.log('로그아웃 성공');
+          window.location.href = '/';
+        })
+        .catch((error) => {
+          console.error('로그아웃 실패', error);
+        });
+    } else {
+      navigate(`/home/${encodeURIComponent(menu)}`);
+    }
+  };
 
   return (
     <div>
       <div className='menu-area'>
         <ul className='menu-list'>
           {menuList.map((menu, index) => (
-            <li
-              key={index}
-              onClick={menu === 'Logout' ? handleLogout : undefined}
-              style={{ cursor: menu === 'Logout' ? 'pointer' : 'default' }}
-            >
+                   <li key={index} onClick={() => handleClick(menu)}>
               {menu}
             </li>
           ))}
         </ul>
       </div>
-
-      
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

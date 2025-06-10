@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 import FirstNav from './page/FirstNav';
-import Main from './page/Main';
+import Home from './page/Home';
 import Navbar from './page/Navbar';
 
 import './App.css';
@@ -31,7 +31,7 @@ const AuthRoute = ({ requireAuth, children }) => {
 
   if (!requireAuth && user) {
     // 비로그인 필요, 근데 로그인 된 경우
-    return <Navigate to="/main" replace />;
+    return <Navigate to="/Home" replace />;
   }
 
   return children;
@@ -46,22 +46,31 @@ function App() {
           path="/"
           element={
             <AuthRoute requireAuth={false}>
-            <FirstNav />
+              <FirstNav />
             </AuthRoute>
           }
         />
 
         {/* 로그인 한 사용자만 접근 가능 */}
         <Route
-          path="/main"
+          path="/Home"
           element={
             <AuthRoute requireAuth={true}>
-            <Navbar />
-              <Main />
+              <Navbar />
+              <Home />
             </AuthRoute>
           }
         />
-
+        {/* 로그인한 사용자만 접근 가능한 라우트 (카테고리 필터 포함) */}
+        <Route
+          path="/Home/:category"
+          element={
+            <AuthRoute requireAuth={true}>
+              <Navbar />
+              <Home />
+            </AuthRoute>
+          }
+        />
         {/* 404 */}
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>

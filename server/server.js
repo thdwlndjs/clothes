@@ -1,54 +1,28 @@
-console.log('서버 시작ㅋ');
-
-import express from 'express';
-import axios from 'axios';
-import cors from 'cors';
+const express = require('express');
+const admin = require('firebase-admin');
+const cors = require('cors');
+const soldoutCheckRouter = require('./routes/soldoutCheck');
+const ogScraperRouter = require('./routes/ogScraper');
+const serviceAccount = require('./firebase-service-account.json');
 
 const app = express();
-app.use(cors());
 
-app.get('/api/preview', async (req, res) => {
-  const { url } = req.query;
-  if (!url) return res.status(400).json({ error: 'url query parameter is required' });
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}));
 
-  try {
-    const response = await axios.get(url);
-    const html = response.data;
-
-    let ogImage = null;
-    let ogTitle = null;
-
-
-    const regex1 = /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i;
-    const regex2 = /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i;
-
-    const regex11 = /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i;
-    const regex22 = /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i;
-
-
-    const match1 = html.match(regex1);
-    const match2 = html.match(regex2);
-
-    const match11 = html.match(regex11);
-    const match22 = html.match(regex22);
-    if (match1) {
-      ogImage = match1[1];
-    } else if (match2) {
-      ogImage = match2[1];
-    }
-
-    if (match11) {
-      ogTitle = match11[1];
-    } else if (match22) {
-      ogTitle = match22[1];
-    }
-
-    res.json({ ogImage, ogTitle });
-  } catch (error) {
-    console.error('Error fetching preview:', error.message);
-    res.status(500).json({ error: 'Failed to fetch URL' });
-  }
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
 });
+
+const db = admin.firestore();
+
+// db 인자를 넘겨줘야 하는 라우터는 이렇게
+app.use('/api/check-soldout', soldoutCheckRouter(db));
+
+// 일반 라우터는 그대로 등록
+app.use('/api/preview', ogScraperRouter);
 
 app.listen(3001, () => {
   console.log('Server running on http://localhost:3001');

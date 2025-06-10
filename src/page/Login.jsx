@@ -17,7 +17,7 @@ const Login = () => {
 
   const goToMain = (uid) => {
     console.log(`UID ${uid}로 메인 페이지 이동!`);
-    navigate('/main'); // 또는 원하는 페이지로 이동
+    navigate('/Home'); // 또는 원하는 페이지로 이동
   };
 
   
