@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const { isSoldOut } = require('../services/soldoutDetector');  // 이름 일치시키기
 const { Timestamp } = require('firebase-admin/firestore');
+const { sendRestockNotification } = require('../services/notify');
 
 module.exports = (db) => {
     const router = express.Router();
@@ -18,7 +19,7 @@ module.exports = (db) => {
                 },
             });
 
-            const soldOutStatus = isSoldOut(html);  // 이름 맞춤
+            const soldOutStatus = isSoldOut(html); 
 
             const docRef = db.collection('products').doc(encodeURIComponent(url));
             const docSnap = await docRef.get();
@@ -31,13 +32,21 @@ module.exports = (db) => {
                 });
             } else {
                 const prevData = docSnap.data();
-                if (prevData.isSoldOut !== soldOutStatus) {
+            
+                const hasChanged = prevData.isSoldOut !== soldOutStatus;
+            
+                if (hasChanged) {
+                    if (prevData.isSoldOut === true && soldOutStatus === false) {
+                        sendRestockNotification(url);  // 🔔 재입고 알림
+                    }
+            
                     await docRef.update({
                         isSoldOut: soldOutStatus,
                         updatedAt: Timestamp.now(),
                     });
                 }
             }
+            
 
             console.log(`${url} - 품절 상태: ${soldOutStatus ? '품절' : '재고 있음'}`);
 
