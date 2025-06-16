@@ -70,9 +70,12 @@ body {
 @media (max-width: 480px) {
     .menu-area {
       height: 100vh;
+      position: relative;
     }
   
     .menu-list {
+      position: sticky;      /* 스크롤시 고정 */
+      top: 10px;                /* 화면 상단에 붙임 */
       gap: 0px;          /* gap 살짝 줄임 (원래 50px) */
       font-size: 40%;    /* 폰트 크기 조금 줄임 (원래 24px) */
       flex-wrap: nowrap;  /* 줄바꿈 없이 한 줄 유지 */
