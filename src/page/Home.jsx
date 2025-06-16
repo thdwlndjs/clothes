@@ -60,7 +60,8 @@ function Home() {
 
   const fetchOgData = async (url) => {
     try {
-      const res = await axios.get(`http://localhost:3001/api/preview?url=${encodeURIComponent(url)}`);
+      const cloudRunServiceUrl = 'https://clothes-server-725626993177.asia-northeast3.run.app'; 
+      const res = await axios.get(`${cloudRunServiceUrl}/api/preview?url=${encodeURIComponent(url)}`);
       return {
         link: url,
         ogImage: res.data.ogImage || '/fallback.png',
@@ -87,9 +88,10 @@ function Home() {
     try {
       // 1. OG 데이터 가져오기
       const ogData = await fetchOgData(link);
+      const cloudRunServiceUrl = 'https://clothes-server-725626993177.asia-northeast3.run.app'; 
 
       // 2. 품절 여부 확인 API 호출
-      const soldOutRes = await axios.get(`http://localhost:3001/api/check-soldout?url=${encodeURIComponent(link)}`);
+      const soldOutRes = await axios.get(`${cloudRunServiceUrl}/api/check-soldout?url=${encodeURIComponent(link)}`);
       const isSoldOut = soldOutRes.data?.isSoldOut ?? false; // fallback 처리
       console.log('서버 응답:', soldOutRes.data);
 
@@ -214,8 +216,7 @@ function Home() {
               onChange={(e) => setLink(e.target.value)}
               placeholder="상품 링크를 입력하세요"
             />
-            <select value={category} onChange={(e) => setCategory(e.target.value)} className="select-bar"
->
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="select-bar">
               <option value="">카테고리 선택</option>
               {menuList.filter(cat => cat !== 'Logout').map(cat => (
                 <option key={cat} value={cat}>{cat}</option>

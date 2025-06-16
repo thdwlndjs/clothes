@@ -8,7 +8,10 @@ const serviceAccount = require('./firebase-service-account.json');
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',
+    'https://clothes-1e339.web.app'  
+  ],
   credentials: true,
 }));
 
@@ -24,6 +27,13 @@ app.use('/api/check-soldout', soldoutCheckRouter(db));
 // 일반 라우터는 그대로 등록
 app.use('/api/preview', ogScraperRouter);
 
-app.listen(3001, () => {
-  console.log('Server running on http://localhost:3001');
+app.get('/', (req, res) => {
+  res.send('API Server is running');
 });
+
+const isCloudRun = !!process.env.PORT;
+const PORT = isCloudRun ? process.env.PORT : 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+
