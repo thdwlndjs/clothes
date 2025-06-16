@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { auth, provider } from '../firebase';
 import { signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
-
-import './Login.css'
+import { messaging } from '../firebase'; 
+import { getMessaging, onMessage, getToken } from 'firebase/messaging';
 import { useNavigate } from 'react-router-dom';
 
+import './Login.css'
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,7 +21,32 @@ const Login = () => {
     navigate('/Home'); // 또는 원하는 페이지로 이동
   };
 
+  const registerFcmToken = async (uid) => {
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        console.warn('푸시 알림 권한 거부됨');
+        return;
+      }
   
+      const token = await getToken(messaging, {
+        vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY // .env에 넣어둬야 함
+      });
+  
+      console.log("FCM 토큰:", token);
+  
+      await fetch('https://clothes-server-725626993177.asia-northeast3.run.app/register-fcm-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid, fcmToken: token }),
+      });
+  
+      console.log("FCM 토큰 서버에 등록 완료");
+    } catch (err) {
+      console.error("FCM 등록 실패", err);
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault(); // 페이지 리로드 방지
     setErrorMsg('');
@@ -31,6 +57,7 @@ const Login = () => {
         // 성공 시
         setSuccessMsg("로그인에 성공했습니다!");
         console.log('로그인 성공:', userCredential.user);
+        registerFcmToken(userCredential.user.uid);
         goToMain(userCredential.user.uid); // UID 기반으로 메인 화면 이동
       })
       .catch((error) => {
@@ -52,6 +79,7 @@ const Login = () => {
       .then((result) => {
         const user = result.user; // 로그인한 사용자 정보 가져오기
         console.log('구글 로그인 성공:', user);
+        registerFcmToken(userCredential.user.uid);
         goToMain(user.uid); // UID 기반으로 메인 화면 이동
       })
       .catch((error) => {
