@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Login from './Login';
-import Signin from './Signin'; 
+import Signin from './Signin';
 
 import './FirstNav.css';
 
@@ -8,6 +8,7 @@ function FirstNav() {
   const menuList = ['Log in', 'Sign in'];
   const [modalType, setModalType] = useState(null); // 'login' | 'signin'
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalContentRef = useRef(null);
 
   const handleMenuClick = (menu) => {
     if (menu === 'Log in') {
@@ -16,6 +17,14 @@ function FirstNav() {
       setModalType('signin');
     }
     setIsModalOpen(true);
+  };
+
+  // 모달 배경 클릭 핸들러
+  const handleOverlayClick = (e) => {
+    // 모달 내부 컨텐츠 영역 클릭은 무시
+    if (modalContentRef.current && !modalContentRef.current.contains(e.target)) {
+      setIsModalOpen(false);
+    }
   };
 
   return (
@@ -37,9 +46,11 @@ function FirstNav() {
       </div>
 
       {isModalOpen && (
-        <div className="modal-overlay">
-          {modalType === 'login' && <Login />}
-          {modalType === 'signin' && <Signin />}
+        <div className="modal-overlay" onClick={handleOverlayClick}>
+          <div ref={modalContentRef}>
+            {modalType === 'login' && <Login />}
+            {modalType === 'signin' && <Signin />}
+          </div>
         </div>
       )}
     </div>

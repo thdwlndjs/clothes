@@ -1,6 +1,6 @@
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import './Signin.css'
 
@@ -12,6 +12,23 @@ const Signin = () => {
     // 메시지 상태
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
+    //모달제어
+    const [open, setOpen] = useState(true);
+    const modalRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (modalRef.current && !modalRef.current.contains(e.target)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    if (!open) return null;
 
     const handleSignUp = async (e) => {
         e.preventDefault(); // 페이지 리로드 방지
@@ -31,16 +48,17 @@ const Signin = () => {
             // 에러 처리
             if (error.code === 'auth/invalid-email') {
                 setErrorMsg('잘못된 이메일 형식입니다.');
-              } else
+            } else
 
 
-            setErrorMsg(error.message);
+                setErrorMsg(error.message);
         }
     }
+
     return (
-        <div className="signin-box">
+        <div className="signin-box" ref={modalRef}>
             <div className="content">
-                <h1>Sign in</h1>
+                <h1>Signin</h1>
                 <form onSubmit={handleSignUp}>
                     <div>
                         <label htmlFor="username"></label>

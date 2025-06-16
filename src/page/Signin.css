@@ -1,4 +1,3 @@
-/* Login.css */
 
 .signin-box {
     width: 480px;
@@ -80,7 +79,7 @@ input::placeholder {
     margin-bottom: 12px;
     border-radius: 3px;
     border-style: none;
-    
+
 }
 
 .login-button:hover {
@@ -90,7 +89,7 @@ input::placeholder {
 /* 하단텍스트영역 (텍스트 중앙 정렬, 글씨 작음 11px) */
 .bottom-text {
     text-align: center;
-        font-size: 11px;
+    font-size: 11px;
 }
 
 /* 구분선텍스트 (회색 #bcbcbc, 글씨 11px, 아래 여백 35px) */
@@ -100,5 +99,15 @@ input::placeholder {
     margin-bottom: 35px;
 }
 
+@media (max-width: 480px) {
+    .signin-box {
+        width: 90vw;
+        height: auto;
+        margin: 20px auto;
+        padding: 16px;
+    }
 
-
+    .content {
+        padding: 0 12px 24px;
+    }
+}
