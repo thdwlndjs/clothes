@@ -67,3 +67,19 @@ body {
         transform: scale(1);
     }
 }
+@media (max-width: 480px) {
+    .menu-area {
+      height: 100vh;
+    }
+  
+    .menu-list {
+      gap: 0px;          /* gap 살짝 줄임 (원래 50px) */
+      font-size: 40%;    /* 폰트 크기 조금 줄임 (원래 24px) */
+      flex-wrap: nowrap;  /* 줄바꿈 없이 한 줄 유지 */
+    }
+  
+    .menu-list li {
+      padding: 10px 0;
+      white-space: nowrap; /* 글자 줄바꿈 방지 */
+    }
+  }

@@ -1,9 +1,14 @@
 ul {
-  padding-left: 0;      /* 기본 들여쓰기 제거 */
-  margin: 0 auto;       /* 가로 중앙 정렬 */
-  max-width: 800px;     /* 너비 제한 (필요 시 조절) */
-  width: 100%;          /* 부모 너비를 100%로 */
-  box-sizing: border-box; /* 패딩/보더 포함 너비 계산 */
+  padding-left: 0;
+  /* 기본 들여쓰기 제거 */
+  margin: 0 auto;
+  /* 가로 중앙 정렬 */
+  max-width: 800px;
+  /* 너비 제한 (필요 시 조절) */
+  width: 100%;
+  /* 부모 너비를 100%로 */
+  box-sizing: border-box;
+  /* 패딩/보더 포함 너비 계산 */
 }
 
 .pagination {
@@ -11,14 +16,15 @@ ul {
   justify-content: center;
   align-items: center;
   gap: 8px;
-  margin: 20px 0 40px 0; /* 위 여백 20px, 아래 여백 40px */
+  margin: 20px 0 40px 0;
+  /* 위 여백 20px, 아래 여백 40px */
 }
 
 .pagination button {
   padding: 6px 12px;
   background-color: transparent;
   color: black;
-  border: none; 
+  border: none;
   cursor: pointer;
 }
 
@@ -33,7 +39,8 @@ ul {
   margin: 60px;
   margin-bottom: 20px;
   border: 1px solid #ddd;
-  padding: 60px 0 80px 0; /* 위 오른쪽 아래 왼쪽 모두 10px */
+  padding: 60px 0 80px 0;
+  /* 위 오른쪽 아래 왼쪽 모두 10px */
   border-radius: 8px;
   transition: box-shadow 0.3s ease;
 }
@@ -45,7 +52,7 @@ ul {
 }
 
 .product-item:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .product-item img {
@@ -118,8 +125,10 @@ ul {
 /* 🔘 닫기 버튼 */
 .p-close-btn {
   position: absolute;
-  top: 10px;    /* 패딩 상단만큼 */
-  right: 10px;  /* 패딩 우측만큼 */  
+  top: 10px;
+  /* 패딩 상단만큼 */
+  right: 10px;
+  /* 패딩 우측만큼 */
   background: transparent;
   border: none;
   cursor: pointer;
@@ -128,6 +137,7 @@ ul {
   color: #999;
   transition: color 0.2s ease;
 }
+
 .close-btn {
   position: absolute;
   right: 16px;
@@ -178,7 +188,7 @@ ul {
 }
 
 
-.select-bar-wrapper{
+.select-bar-wrapper {
   position: relative;
 }
 
@@ -196,6 +206,24 @@ ul {
 }
 
 @media (max-width: 768px) {
+  .product-item h2 {
+    font-size: 100%;
+    margin: 10px 5px 5px 5px;
+    color: #333;
+  }
+
+  .product-item {
+    position: relative;
+    list-style: none;
+    margin: 17px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 27px 17px 22px 17px;
+    /* 위 오른쪽 아래 왼쪽 모두 10px */
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+  }
+
   .modal {
     width: 95%;
     max-width: none;
@@ -211,8 +239,6 @@ ul {
     font-size: 16px;
   }
 
-  .login-button,
-  .G-login-button,
   .add-button {
     font-size: 13px;
     height: 38px;
