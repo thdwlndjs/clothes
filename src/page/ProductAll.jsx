@@ -23,7 +23,7 @@ function ProductAll() {
   useEffect(() => {
     const fetchOgImageAndUpload = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/preview?url=${encodeURIComponent(originalUrl)}`);
+        const res = await axios.get(`http://localhost:8080/api/products/preview?url=${encodeURIComponent(originalUrl)}`);
         setogImage(res.data.ogImage);
 
       } catch (error) {
@@ -35,7 +35,7 @@ function ProductAll() {
 
     const fetchOgTitleAndUpload = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/preview?url=${encodeURIComponent(originalUrl)}`);
+        const res = await axios.get(`http://localhost:8080/api/products/preview?url=${encodeURIComponent(originalUrl)}`);
         setogTitle(res.data.ogTitle);
 
       } catch (error) {
