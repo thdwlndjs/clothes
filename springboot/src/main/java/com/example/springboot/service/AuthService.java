@@ -1,7 +1,7 @@
 package com.example.springboot.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import com.example.springboot.entity.User;
+import com.example.springboot.entity.UserEntity;
 import com.example.springboot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,7 +24,7 @@ public class AuthService {
     // 회원가입
     public boolean signin(String email, String password) {
         if (userRepository.findByEmail(email) != null) return false;
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
@@ -33,7 +33,7 @@ public class AuthService {
 
     // 로그인
     public String login(String email, String password) {
-        User user = userRepository.findByEmail(email);
+    	UserEntity user = userRepository.findByEmail(email);
         if (user == null) return null;
         if (!passwordEncoder.matches(password, user.getPassword())) return null;
         return email; // 실제 토큰은 controller에서 생성

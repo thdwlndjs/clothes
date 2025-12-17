@@ -1,7 +1,7 @@
 package com.example.springboot.service;
 
 import com.example.springboot.dto.ProductDTO;
-import com.example.springboot.entity.Product;
+import com.example.springboot.entity.ProductEntity;
 import com.example.springboot.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -35,7 +35,7 @@ public class ProductService {
     public ProductDTO create(ProductDTO req) {
         boolean soldOut = soldOutChecker.check(req.getUrl());
 
-        Product entity = Product.builder()
+        ProductEntity entity = ProductEntity.builder()
             .category(req.getCategory())
             .url(req.getUrl())
             .ogImage(req.getOgImage())
@@ -55,8 +55,8 @@ public class ProductService {
     // 스케줄러: 품절만 갱신(OG/Title은 손대지 않음)
     @Transactional
     public void refreshSoldOutAll() {
-        List<Product> all = productRepository.findAll();
-        for (Product p : all) {
+        List<ProductEntity> all = productRepository.findAll();
+        for (ProductEntity p : all) {
             boolean now = soldOutChecker.check(p.getUrl());
             Boolean prev = p.getSoldOut();
             if (prev == null || prev != now) {
@@ -65,7 +65,7 @@ public class ProductService {
         }
     }
 
-    private ProductDTO toDto(Product p) {
+    private ProductDTO toDto(ProductEntity p) {
         return new ProductDTO(
             p.getId(),
             p.getCategory(),

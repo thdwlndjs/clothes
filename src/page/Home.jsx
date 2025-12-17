@@ -21,9 +21,7 @@ function Home() {
   const [categoryFilter, setCategoryFilter] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // ----------------------------
-  // 1) 최초 상품 목록 불러오기
-  // ----------------------------
+  // 1. 최초 상품 목록 불러오기
   const loadProducts = async () => {
     try {
       const res = await axios.get('http://localhost:8080/api/products');
@@ -37,9 +35,7 @@ function Home() {
     loadProducts();
   }, []);
 
-  // ----------------------------
-  // 2) URL로부터 og:image, og:title 가져오기 (Spring Boot)
-  // ----------------------------
+  // 2. URL로부터 og:image, og:title 가져오기 (Spring Boot)
   const fetchOgData = async (url) => {
     try {
       const res = await axios.get(
@@ -61,9 +57,7 @@ function Home() {
     }
   };
 
-  // ----------------------------
-  // 3) 상품 추가 (DB 저장)
-  // ----------------------------
+  // 3. 상품 추가 (DB 저장)
   const onAdd = async () => {
     if (!url.trim() || !category) return alert('링크와 카테고리를 모두 입력해주세요.');
 
@@ -73,6 +67,10 @@ function Home() {
       const soldOutRes = await axios.get(
         `http://localhost:8080/api/soldout/check?url=${encodeURIComponent(url)}`
       );
+
+      console.log('[soldout api]', soldOutRes.data);
+      console.log('[soldout api type]', typeof soldOutRes.data?.isSoldOut, soldOutRes.data?.isSoldOut);
+
       const isSoldOut = soldOutRes.data?.isSoldOut ?? false;
       const newItem = {
         url: ogData.url,
@@ -85,8 +83,10 @@ function Home() {
       // DB 저장
       const res = await axios.post('http://localhost:8080/api/products', newItem);
 
+      console.log('[products post response]', res.data);
+
       // 화면 갱신
-      setProducts(prev => [res.data, ...prev]);
+      setProducts(prev => [{ ...res.data, soldOut: isSoldOut }, ...prev]);
 
       seturl('');
       setCategory('');
@@ -97,9 +97,7 @@ function Home() {
     }
   };
 
-  // ----------------------------
-  // 4) 상품 삭제 (DB 삭제)
-  // ----------------------------
+  // 4. 상품 삭제 (DB 삭제)
   const handleDelete = async (id) => {
     if (!window.confirm('삭제하시겠습니까?')) return;
 
@@ -112,9 +110,7 @@ function Home() {
     }
   };
 
-  // ----------------------------
-  // 필터링 + 페이지네이션
-  // ----------------------------
+  // 5. 필터링 + 페이지네이션
   useEffect(() => {
     if (Param && menuList.includes(Param)) {
       setCategoryFilter(Param);
@@ -141,7 +137,7 @@ function Home() {
       {/* 상품 리스트 */}
       <ul>
         {paginatedProducts.map(product => (
-          <li className={`product-item ${product.soldOut ? 'sold-out' : ''}`} key={product.id}>
+          <li className={`product-item ${product.isSoldOut ? 'sold-out' : ''}`} key={product.id}>
             <button className="p-close-btn" onClick={() => {
               if (window.confirm('삭제하시겠습니까?')) {
                 handleDelete(product.id);

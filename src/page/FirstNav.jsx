@@ -1,56 +1,60 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react';
 import Login from './Login';
 import Signin from './Signin';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-regular-svg-icons'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
+import './FirstNav.css';
 
+function FirstNav() {
+  const menuList = ['Log in', 'Sign in'];
+  const [modalType, setModalType] = useState(null); // 'login' | 'signin'
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalContentRef = useRef(null);
 
-const FirstNav = () => {
-    const menuList = ['Log in', 'Sign in']
-    const [modalType, setModalType] = useState(null); // null | 'login' | 'signin'
+  const handleMenuClick = (menu) => {
+    if (menu === 'Log in') {
+      setModalType('login');
+    } else if (menu === 'Sign in') {
+      setModalType('signin');
+    }
+    setIsModalOpen(true);
+  };
 
-    const [isModalOpen, setIsModalOpen] = useState(false)
+  // 모달 배경 클릭 핸들러
+  const handleOverlayClick = (e) => {
+    // 모달 내부 컨텐츠 영역 클릭은 무시
+    if (modalContentRef.current && !modalContentRef.current.contains(e.target)) {
+      setIsModalOpen(false);
+    }
+  };
 
-    const openModal = () => setIsModalOpen(true)
-    const closeModal = () => setIsModalOpen(false)
+  return (
+    <div>
+      <div className="menu-area">
+        <ul className="menu-list">
+          {menuList.map((menu, index) => (
+            <li
+              key={index}
+              onClick={() => handleMenuClick(menu)}
+              style={{
+                cursor: ['Log in', 'Sign in'].includes(menu) ? 'pointer' : 'default',
+              }}
+            >
+              {menu}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-    return (
-        <div>
-            <div className='menu-area'>
-                <ul className='menu-list'>
-                    {menuList.map((menu, index) => (
-                        <li
-                            key={index}
-                            onClick={() => {
-                                if (menu === 'Log in') {
-                                    setModalType('login');
-                                    setIsModalOpen(true);
-                                } else if (menu === 'Sign in') {
-                                    setModalType('signin');
-                                    setIsModalOpen(true);
-                                }
-                            }}
-                            style={{ cursor: menu === 'Log in' || menu === 'Sign in' ? 'pointer' : 'default' }}
-                        >
-                            {menu}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-
-            {/* 모달 UI */}
-            {isModalOpen && (
-                <div className="modal-overlay" onClick={closeModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        {modalType === 'login' && <Login />}
-                        {modalType === 'signin' && <Signin />}
-                    </div>
-                </div>
-            )}
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={handleOverlayClick}>
+          <div ref={modalContentRef}>
+            {modalType === 'login' && <Login />}
+            {modalType === 'signin' && <Signin />}
+          </div>
         </div>
-    )
+      )}
+    </div>
+  );
 }
 
-export default FirstNav
+export default FirstNav;
