@@ -1,7 +1,10 @@
 package com.example.springboot.controller;
 
+import com.example.springboot.dto.ProductDTO;
 import com.example.springboot.entity.Product;
+import com.example.springboot.repository.ProductRepository;
 import com.example.springboot.service.ProductService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,14 +16,19 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-
+    //조회
     @GetMapping
-    public List<Product> getAll() {
-        return productService.findAll();
+    public List<ProductDTO> getAll() {
+        return productService.findAllDto();
     }
-
+    //추가
     @PostMapping
-    public Product create(@RequestBody Product p) {
-        return productService.save(p);
+    public ProductDTO add(@RequestBody ProductDTO req) {
+        return productService.create(req);
+    }
+    //삭제
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        productService.deleteById(id);
     }
 }

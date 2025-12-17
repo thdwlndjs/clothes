@@ -1,31 +1,24 @@
 package com.example.springboot.dto;
 
+import lombok.*;
+
+@Getter
+
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductDTO {
+
+    private Long id;
+
+    private String category;
+    private String url;
 
     private String ogImage;
     private String ogTitle;
 
-    public ProductDTO() {
-    }
+    private Integer price;
+    private Boolean isSoldOut;
+    
 
-    public ProductDTO(String ogImage, String ogTitle) {
-        this.ogImage = ogImage;
-        this.ogTitle = ogTitle;
-    }
-
-    public String getOgImage() {
-        return ogImage;
-    }
-
-    public void setOgImage(String ogImage) {
-        this.ogImage = ogImage;
-    }
-
-    public String getOgTitle() {
-        return ogTitle;
-    }
-
-    public void setOgTitle(String ogTitle) {
-        this.ogTitle = ogTitle;
-    }
 }

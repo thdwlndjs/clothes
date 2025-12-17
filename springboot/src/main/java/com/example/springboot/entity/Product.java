@@ -1,10 +1,7 @@
 package com.example.springboot.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 
 @Entity
 @Table(name = "products")
@@ -18,21 +15,32 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String site;
+    @Column(nullable = false)
+    private String category;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String url;
+
+    @Column(name = "og_image")
+    private String ogImage;
+
+    @Column(name = "og_title")
+    private String ogTitle;
 
     private Integer price;
 
-    private Boolean isSoldOut;
+    @Column(name = "is_sold_out")
+    private Boolean soldOut;
 
-    @Column(columnDefinition = "TEXT")
-    private String image;
-
-    @Column(columnDefinition = "TEXT")
-    private String title;
-
+    @Column(name="updated_at", insertable = false, updatable = false)
     private java.sql.Timestamp updatedAt;
+
+    @Column(name="created_at", insertable = false, updatable = false)
     private java.sql.Timestamp createdAt;
+
+    // 스케줄러에서 품절만 갱신
+    public void updateSoldOut(Boolean soldOut) {
+        this.soldOut = soldOut;
+    }
 }
+

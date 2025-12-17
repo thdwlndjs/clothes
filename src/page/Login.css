@@ -109,7 +109,7 @@ input::placeholder {
     border: 1px solid #e5e5e5;
 }
 
-.google-Icon{
+.google-Icon {
     width: 18px;
     height: 18px;
     object-fit: contain;
@@ -121,3 +121,21 @@ input::placeholder {
     font-size: 11px;
 }
 
+@media (max-width: 480px) {
+    .login-box {
+        width: 90vw;
+        height: auto;
+        margin: 20px auto;
+        padding: 16px;
+    }
+
+    .login-button,
+    .G-login-button {
+        font-size: 13px;
+        padding: 11px 20px;
+    }
+
+    .content {
+        padding: 0 12px 24px;
+    }
+}

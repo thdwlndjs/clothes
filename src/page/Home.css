@@ -1,0 +1,252 @@
+ul {
+  padding-left: 0;
+  /* 기본 들여쓰기 제거 */
+  margin: 0 auto;
+  /* 가로 중앙 정렬 */
+  max-width: 800px;
+  /* 너비 제한 (필요 시 조절) */
+  width: 100%;
+  /* 부모 너비를 100%로 */
+  box-sizing: border-box;
+  /* 패딩/보더 포함 너비 계산 */
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 0 40px 0;
+  /* 위 여백 20px, 아래 여백 40px */
+}
+
+.pagination button {
+  padding: 6px 12px;
+  background-color: transparent;
+  color: black;
+  border: none;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  font-weight: bold;
+  color: black;
+}
+
+.product-item {
+  position: relative;
+  list-style: none;
+  margin: 60px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  padding: 60px 0 80px 0;
+  /* 위 오른쪽 아래 왼쪽 모두 10px */
+  border-radius: 8px;
+  transition: box-shadow 0.3s ease;
+}
+
+/* soldOut일 때  색상 변경 */
+.product-item.sold-out {
+  color: gray;
+  opacity: 0.6;
+}
+
+.product-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-item img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.product-item h2 {
+  font-size: 1.7rem;
+  margin: 20px 40px 0 60px;
+  color: #333;
+}
+
+/* 🔘 고정 위치 버튼 (예: 로그인 열기 버튼) */
+.fixed-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 999;
+}
+
+/* 🔘 모달 전체 영역 */
+.modal {
+  width: 90%;
+  max-width: 480px;
+  height: auto;
+  max-height: 90vh;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: white;
+  z-index: 1000;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 🔘 헤더 영역 */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  border-bottom: 1px solid #eee;
+  padding: 17px 0;
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  flex-grow: 1;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 🔘 닫기 버튼 */
+.p-close-btn {
+  position: absolute;
+  top: 10px;
+  /* 패딩 상단만큼 */
+  right: 10px;
+  /* 패딩 우측만큼 */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 20px;
+  color: #999;
+  transition: color 0.2s ease;
+}
+
+.close-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 20px;
+  color: #999;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+/* 🔘 본문 영역 */
+.modal-body {
+  flex-grow: 1;
+  padding: 0 40px 0px 40px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-sizing: border-box;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+
+
+
+
+.add-button {
+  height: 40px;
+  width: 100%;
+  font-size: 14px;
+  padding: 0 30px;
+  cursor: pointer;
+  background-color: black;
+  color: white;
+  margin-top: 20px;
+  margin-bottom: 12px;
+  border-radius: 3px;
+  border-style: none;
+}
+
+
+.select-bar-wrapper {
+  position: relative;
+}
+
+.select-bar {
+  padding: 4px 3px 4px 7px;
+  font-size: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  appearance: none;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px 16px;
+}
+
+@media (max-width: 768px) {
+  .product-item h2 {
+    font-size: 100%;
+    margin: 10px 5px 5px 5px;
+    color: #333;
+  }
+
+  .product-item {
+    position: relative;
+    list-style: none;
+    margin: 17px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 27px 17px 22px 17px;
+    /* 위 오른쪽 아래 왼쪽 모두 10px */
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .modal {
+    width: 95%;
+    max-width: none;
+    padding: 0;
+    border-radius: 4px;
+  }
+
+  .modal-body {
+    padding: 0 20px 24px;
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .add-button {
+    font-size: 13px;
+    height: 38px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .modal {
+    max-width: 520px;
+  }
+}

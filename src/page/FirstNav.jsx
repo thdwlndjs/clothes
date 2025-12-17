@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import Login from './page/Login';
-import Signin from './page/Signin'; 
+import Login from './Login';
+import Signin from './Signin';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -25,13 +25,13 @@ const FirstNav = () => {
                             key={index}
                             onClick={() => {
                                 if (menu === 'Log in') {
-                                  setModalType('login');
-                                  setIsModalOpen(true);
+                                    setModalType('login');
+                                    setIsModalOpen(true);
                                 } else if (menu === 'Sign in') {
-                                  setModalType('signin');
-                                  setIsModalOpen(true);
+                                    setModalType('signin');
+                                    setIsModalOpen(true);
                                 }
-                              }}
+                            }}
                             style={{ cursor: menu === 'Log in' || menu === 'Sign in' ? 'pointer' : 'default' }}
                         >
                             {menu}
@@ -42,9 +42,11 @@ const FirstNav = () => {
 
             {/* 모달 UI */}
             {isModalOpen && (
-                <div className="modal-overlay">
-                    {modalType === 'login' && <Login />}
-                    {modalType === 'signin' && <Signin />}
+                <div className="modal-overlay" onClick={closeModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        {modalType === 'login' && <Login />}
+                        {modalType === 'signin' && <Signin />}
+                    </div>
                 </div>
             )}
         </div>
