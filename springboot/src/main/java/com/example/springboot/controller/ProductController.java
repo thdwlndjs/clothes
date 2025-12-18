@@ -1,8 +1,6 @@
 package com.example.springboot.controller;
 
 import com.example.springboot.dto.ProductDTO;
-import com.example.springboot.entity.Product;
-import com.example.springboot.repository.ProductRepository;
 import com.example.springboot.service.ProductService;
 
 import lombok.RequiredArgsConstructor;

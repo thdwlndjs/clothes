@@ -2,8 +2,8 @@ package com.example.springboot.scheduler;
 
 import com.example.springboot.entity.ProductEntity;
 import com.example.springboot.repository.ProductRepository;
-import com.example.springboot.service.NotificationService;
 import com.example.springboot.service.SoldOutChecker;
+import com.example.springboot.service.WebPushService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,51 +19,32 @@ public class NotificationScheduler {
 
     private final ProductRepository productRepository;
     private final SoldOutChecker soldOutChecker;
-    private final NotificationService notificationService;
+    private final WebPushService webPushService; // 지금은 Stub 가능
 
     /**
-     * 품절 상태만 주기적으로 갱신하고,
-     * true -> false(재입고) 전환 시 Notification 생성.
-     *
-     * fixedDelay: 이전 실행이 끝난 뒤 delay 후 다시 실행 (중복 실행 방지에 유리)
+     * 60초마다 전체 상품 품절 상태 체크
      */
-    @Scheduled(
-            fixedDelayString = "${soldout.scheduler.delay-ms:60000}",
-            initialDelayString = "${soldout.scheduler.initial-delay-ms:10000}"
-    )
+    @Scheduled(fixedDelayString = "${scheduler.soldout.interval-ms:60000}")
     @Transactional
-    public void refreshSoldOutAndNotify() {
-        List<ProductEntity> all = productRepository.findAll();
+    public void checkSoldOutAndNotify() {
+        List<ProductEntity> products = productRepository.findAll();
 
-        int changed = 0;
-        int restocked = 0;
+        for (ProductEntity p : products) {
+            Boolean prev = p.getSoldOut();
+            boolean now = soldOutChecker.check(p.getUrl());
 
-        for (ProductEntity p : all) {
-            try {
-                boolean now = soldOutChecker.check(p.getUrl());
-                boolean prev = Boolean.TRUE.equals(p.getIs_sold_out()); // null-safe
+            // 🔥 재입고 감지 (true → false)
+            if (Boolean.TRUE.equals(prev) && !now) {
+                log.info("[RESTOCK] 재입고 감지 - productId={}, url={}", p.getId(), p.getUrl());
 
-                // 상태 변화가 없으면 skip
-                if (prev == now) continue;
+                // 👉 여기서 푸시 발송 (앱 꺼져 있어도 OK)
+                webPushService.sendRestock(p);
+            }
 
-                // DB 반영 (dirty checking)
+            // 상태 변경 시에만 DB 갱신
+            if (prev == null || prev != now) {
                 p.updateSoldOut(now);
-                changed++;
-
-                // 재입고 감지: prev=true(품절) -> now=false(재고있음)
-                if (prev && !now) {
-                    notificationService.createRestockNotification(p);
-                    restocked++;
-                    log.info("[RESTOCK] productId={} title={} url={}", p.getId(), p.getOg_title(), p.getUrl());
-                }
-
-            } catch (Exception e) {
-                // 한 상품 실패가 전체 스케줄러를 죽이지 않도록 방어
-                log.warn("[SOLDOUT_CHECK_FAIL] productId={} url={} msg={}",
-                        p.getId(), p.getUrl(), e.getMessage());
             }
         }
-
-        log.info("[SCHEDULER_DONE] total={} changed={} restocked={}", all.size(), changed, restocked);
     }
 }
